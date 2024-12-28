@@ -1,0 +1,6 @@
+@JWTTokenWithRolesRealTime_HostAddress = http://localhost:5174
+
+GET {{JWTTokenWithRolesRealTime_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
