@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JWTTokenWithRolesRealTime.Controllers
 {
-   //  [Authorize]
-   // [Authorize(Roles = "user")]
+    [Authorize]
+  // [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RoleInformationController : ControllerBase
     {
         private readonly IRolesService _rolesService;
-        public RoleController(IRolesService rolesService)
+        public RoleInformationController(IRolesService rolesService)
         {
             _rolesService = rolesService;
         }
