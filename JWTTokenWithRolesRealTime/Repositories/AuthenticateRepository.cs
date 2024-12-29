@@ -18,9 +18,10 @@ namespace JWTTokenWithRolesRealTime.Repositories
         {
             using (IDbConnection con = _connectionFactory.GetHotelManagementSqlConnection())
             {
+                var encryptText = EncryptionLibrary.EncryptText(loginDTOObj.Password);
                 var p = new DynamicParameters();
                 p.Add("@UserName", loginDTOObj.UserName);
-                p.Add("@Password", loginDTOObj.Password);
+                p.Add("@Password", encryptText);
                 //var queryResult = await conn.QueryAsync<Hotel>(StoredProcedureStaticMessages.GetHotelDetails, CommandType.StoredProcedure);
                 var result = await con.QueryAsync<UserSignInResponse>(StoredProcedureStatusMessages.SignIn, p, commandType: CommandType.StoredProcedure);
                 var status = result.FirstOrDefault();

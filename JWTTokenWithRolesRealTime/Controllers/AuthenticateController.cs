@@ -38,27 +38,30 @@ namespace JWTTokenWithRolesRealTime.Controllers
                     {
                         var userRolesObj = await _authenticateService.GetUserRolesInformation(loginDTOObj);
                         var claims = new[] {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("UserName",userRolesObj.UserName),
-                        new Claim("EmailId", userRolesObj.EmailId),
-                        new Claim("PhoneNumber", userRolesObj.PhoneNumber),
-                        new Claim("Address", userRolesObj.Address),
-                        new Claim("IsActive", Convert.ToString(userRolesObj.IsActive)),
-                        new Claim("Roles", userRolesObj.RoleName)
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),//this is one object
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),//this is one object
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),//this is one object
+                        new Claim("UserName",userRolesObj.UserName),//this is one object
+                        new Claim("EmailId", userRolesObj.EmailId),//this is one object
+                        new Claim("PhoneNumber", userRolesObj.PhoneNumber),//this is one object
+                        new Claim("Address", userRolesObj.Address),//this is one object
+                        new Claim("IsActive", Convert.ToString(userRolesObj.IsActive)),//this is one object
+                        new Claim("Roles", userRolesObj.RoleName)//this is one object
                     };
-
+                        //this symentric security key comming from Microsoft.IdentityModel.Tokens  namespace
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                        //this SigningCredentials comming from Microsoft.IdentityModel.Tokens  namespace
+                        //HmacSha256 is the encryption alogrotham.
                         var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        //this JwtSecurityToken comming from System.IdentityModel.Tokens.Jwt namespace                                
                         var token = new JwtSecurityToken(
                             _configuration["Jwt:Issuer"],
                             _configuration["Jwt:Audience"],
-                            claims,
-                            expires: DateTime.UtcNow.AddMinutes(10),
+                            claims,//pass the claims object here.
+                            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:TokenExpriyTime"])),//SET THE TIME FOR  YOUR TOKEN 
                             signingCredentials: signIn);
                         loginResponseObj.UserMessage = res.StatusMessage;
-                        loginResponseObj.AccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                        loginResponseObj.AccessToken = new JwtSecurityTokenHandler().WriteToken(token);//pass the token object here
                         return Ok(loginResponseObj);
                     }
                     else
